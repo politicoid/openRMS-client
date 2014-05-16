@@ -1,0 +1,26 @@
+<table class="item_table display" id = "items_{{id}}" cellpadding="0" cellspacing="0" border="0" width="100%">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>SKU</th>
+			<th>CNT</th>
+			<th>Unit Price</th>
+			<th>Price</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="item in bag">
+			<td class="col-md-5"><a href = "item.html/{{item.id}}">{{item.name}}</a></td>
+			<td class="col-md-2">{{item.sku}}</td>
+			<td class="col-md-1 item-cnt" id="item-cnt-{id}">{{item.cnt}}</td>
+			<td class="col-md-1">${{item.list}}</td>
+			<td class="col-md-2">${{item.list * item.cnt | number:2}}</td>
+			<td class="col-md-1">
+				<div class="btn-group">
+					<a class="btn btn-sm btn-default glyphicon glyphicon-trash" title="Delete" href="?action=delete&iid={{item.id}}"></a>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

@@ -1,0 +1,31 @@
+<div class="row">
+	<div class="col-md-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Find Items
+			</div>
+			{{category}}
+			<div class="panel-body">
+				<legend>Categories</legend>
+				<div categories>
+				</div>
+				<legend>Minimum Score</legend>
+				<div scores></div>
+			</div>
+		</div>
+	</div>
+	<div ng-repeat="item in items | filter:itemFilter" class="col-md-3">
+		<div class="panel panel-info">
+		  <div class="panel-heading">
+		    <h3 class="panel-title">
+		    	<a href="#/shop/{{shop.id}}/item/{{item.id}}">
+		    	{{item.name}}				    		
+		    	</a>
+		    </h3>
+		  </div>
+		  <div class="panel-body">
+				<p>{{item.short_desc}}</p>
+		  </div>
+		</div>
+	</div>
+</div>

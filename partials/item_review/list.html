@@ -1,0 +1,23 @@
+<div class="well col-md-12" ng-controller="ItemReviewListCtrl">
+	<legend><a href = "#" id = "minimize" class = "glyphicon glyphicon-resize-small"></a> Review {{item.name}}</legend>
+	<div id = "my_review">
+		<div class="col-md-8">
+			<form class="form-horizontal" action="item_review.php?action=save&iid=<?=$_item->id?>" method="post" id="review-form">
+				<fieldset>
+					<input type="text" id = "title" name="title" class="form-control input-md" placeholder="" style="margin-bottom: 5px;">
+					<textarea id = "content" name="content"></textarea>
+				</fieldset>
+				<input type = "hidden" name = "score" id = "score"/>
+				<input type = "hidden" name = "rid" id = "rid"/>
+			</form>
+		</div>
+		<div class="col-md-4">
+			<legend>Rate</legend>
+			<div id = "rating"></div>
+		</div>
+	</div>
+</div>
+<div class="well col-md-12" ng-repeat="review in reviews">
+	<legend>{{review.title}}</legend>
+	{{review.content}}
+</div>

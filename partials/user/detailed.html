@@ -1,0 +1,57 @@
+<div class = "container" ng-hide="session">
+	<form class="form-horizontal">
+		<fieldset>
+			<legend>Agora Login</legend>
+			<div class="form-group">
+				<label class="col-md-3 control-label" for="username">Username</label>
+				<div class="col-md-8">
+					<input id="username" name="username" type="text" placeholder="Username" class="form-control input-md">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-3 control-label" for="password">Password</label>
+				<div class="col-md-8"><input id="password" name="password" type="password" placeholder="Password" class="form-control input-md"></div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-3 control-label" for="singlebutton">Login</label>
+				<div class="col-md-3">
+					<button name="singlebutton" class="btn btn-primary submit-button">Submit</button>
+				</div>
+				<div class="col-md-3">
+					<a href="#/register">Register</a>
+				</div>
+			</div>
+		</fiedset>
+	</form>
+</div>
+<div class = "container col-md-12" ng-show="session">
+	<div class="col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="user.php?user=<?=$_user->username?>">Username</a>
+			</div>
+			<div class="panel-body">
+				<legend>Info</legend>
+				<div class="col-md-6"><p>First Last</p></div>
+				<div class="col-md-6">
+					<div class="btn-toolbar" role="toolbar">
+						<div class="btn-group btn-group-xs">
+							<button id="profile_friend_{{user.id}}" class="btn btn-primary">Friend</button>
+							<button id="profile_message_{{user.id}}" class="btn btn-primary">Message</button>
+						</div>
+					</div>
+				</div>
+				<legend>Badges</legend>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Public Feed
+			</div>
+			<div class="panel-body">
+			</div>
+		</div>
+	</div>
+</div>
