@@ -1,0 +1,12 @@
+<table id = "resource-{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+	<thead>
+		<tr>
+			<th ng-repeat = "field in columns">{{field}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat = "doc in docs" id="doc-{{resource}}-{{doc['_id']}}" document-entry>
+			<td ng-repeat = "field in columns" document-field>{{doc[field]}}</td>
+		</tr>
+	</tbody>
+</table>

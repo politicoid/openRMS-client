@@ -13,8 +13,10 @@
 	<body>
 		<div ng-controller="MainCtrl" ng-init = "init()">
 			<!--<ng-include src="'agora.conf'"></ng-include>-->
-			<ng-include src="'views/menu.html'"></ng-include>
-			<div ng-view class="container col-md-12"></div>
+			<div class="col-md-2">
+				<ng-include src="'admin/views/menu.html'"></ng-include>
+			</div>
+			<div ng-view class="container col-md-10"></div>
 		</div>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0-beta.7/angular.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0-beta.7/angular-route.js"></script>
@@ -27,12 +29,8 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/bloodhound.min.js"></script>
 
 		<!-- Load Controllers -->
-		<script src="js/controllers/root.js"></script>
-		<script src="js/controllers/routes.js"></script>
-		<script src="js/controllers/shop.js"></script>
-		<script src="js/controllers/menu.js"></script>
-
-		<!-- Load Models -->
+		<script src="admin/js/controller.js"></script>
+		<script src="admin/js/routes.js"></script>
 		<script src="js/models/websocket.js"></script>
 	</body>
 </html>

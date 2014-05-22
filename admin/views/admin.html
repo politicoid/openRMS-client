@@ -1,0 +1,18 @@
+
+<table id = "{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+	<thead>
+		<tr>
+			<th ng-repeat = "field in model">{{field}}</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat = "doc in docs" repeat-complete="init()">
+			<td ng-repeat = "field in model">{{doc[field]}}</td>
+			<td class = "actiongroup">
+				<div class="btn-group">
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

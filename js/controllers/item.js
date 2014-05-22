@@ -1,10 +1,13 @@
 agoraApp.controller('ItemDetailCtrl', function($scope, $http, $routeParams){
+	/*
 	$http.get("/item.php?format=json", {params: {iid: $routeParams.iid, sid: $routeParams.sid} })
 	.success(function (results) {
 		$scope.item = results.data;
 	});
+	*/
 });
 
+/*
 agoraApp.controller('ItemListCtrl', function($scope, $http, $routeParams){
 	if ($scope.categories == null)
 	{
@@ -123,3 +126,4 @@ agoraApp.controller('ItemReviewListCtrl', function ($scope, $http, $routeParams)
 		}
 	};
 });
+*/
