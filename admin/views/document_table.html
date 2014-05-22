@@ -1,12 +1,23 @@
+<h1>{{resource | normalize}} Management</h1>
+<div class="btn-group">
+	<a class="btn btn-sm btn-default glyphicon glyphicon-plus cmd-new" title = "Add {{resource | normalize}}" href = ""></a>
+</div>
+<hr/>
 <table id = "resource-{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
 	<thead>
 		<tr>
-			<th ng-repeat = "field in columns">{{field}}</th>
+			<th ng-repeat = "(key, name) in columns">{{name}}</th>
+			<th class = "col-md-2">Actions</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat = "doc in docs" id="doc-{{resource}}-{{doc['_id']}}" document-entry>
-			<td ng-repeat = "field in columns" document-field>{{doc[field]}}</td>
+		<tr ng-repeat = "doc in docs" doc-resource = "{{resource}}" doc-id="{{doc['_id']}}" document-entry>
+			<td ng-repeat = "(key, name) in columns" document-field title = "{{doc[key]}}">{{doc[key] | trim}}</td>
+			<td>
+				<a class="btn btn-sm btn-default glyphicon glyphicon-edit" title="Edit" href=""></a>
+				<a class="btn btn-sm btn-default glyphicon glyphicon-eye-open" title="Details" href=""></a>
+				<a class="btn btn-sm btn-default glyphicon glyphicon-trash" title="Delete" href="" ng-click = "delete_entry()"></a>
+			</td>
 		</tr>
 	</tbody>
 </table>

@@ -55,38 +55,11 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		}
 		return currentCallbackId;
 	}
-
-	Service.getShop = function(sid) {
+	Service.getDoc = function(resource, id) {
 		var request = {
-			resource: "shop",
+			resource: resource,
 			operation: "read",
-			data: sid
-		};
-		// Storing in a variable for clarity on what sendRequest returns
-		var promise = sendRequest(request); 
-		return promise;
-	};
-	Service.getShops = function() {
-		var request = {
-			resource: "shop",
-			operation: "search",
-		};
-		// Storing in a variable for clarity on what sendRequest returns
-		var promise = sendRequest(request); 
-		return promise;
-	};
-	Service.getItems = function(sid) {
-		var request = {
-			resource: "item",
-			operation: "search",
-			data: {shop: sid}
-		};
-		return sendRequest(request); 
-	};
-	Service.getModels = function() {
-		var request = {
-			resource: "model",
-			operation: "search",
+			data: id
 		};
 		return sendRequest(request); 
 	};
@@ -99,17 +72,21 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		return sendRequest(request); 
 	};
 	// Used by admin features
-	Service.getDocs = function(resource, sid) {
-		if (sid == null)
-			constraints = {};
-		else
-			constraints = {shop: sid};
+	Service.getDocs = function(resource, constraints) {
 		var request = {
 			resource: resource,
 			operation: "search",
 			data: constraints
 		};
 		return sendRequest(request); 
+	};
+	Service.deleteDoc = function(resource, id) {
+		var request = {
+			resource: resource,
+			operation: "delete",
+			data: id
+		};
+		sendRequest(request);
 	};
 	Service.login = function(username, password)
 	{

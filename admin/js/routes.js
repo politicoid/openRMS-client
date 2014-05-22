@@ -1,5 +1,5 @@
 agoraApp.config(function($routeProvider) {
-	$routeProvider.when('/shop', {
+	$routeProvider.when('/list/shop', {
 		template: "<document-table></document-table>",
 		controller: 'ShopListCtrl',
 		resolve: { myVar:
@@ -7,7 +7,7 @@ agoraApp.config(function($routeProvider) {
 				return connectionFactory.connected;
 			}
 		}
-	}).when('/item', {
+	}).when('/list/item/:sid?', {
 		template: "<document-table></document-table>",
 		controller: 'ItemListCtrl',
 		resolve: { myVar:
@@ -15,7 +15,7 @@ agoraApp.config(function($routeProvider) {
 				return connectionFactory.connected;
 			}
 		}
-	}).when('/:model', {
+	}).when('/list/:resource/:sid?', {
 		template: "<document-table></document-table>",
 		controller: 'ModelListCtrl',
 		resolve: { myVar:
@@ -23,7 +23,15 @@ agoraApp.config(function($routeProvider) {
 				return connectionFactory.connected;
 			}
 		}
+	}).when('/edit/:resource/:id?', {
+		template: "<document-editor></document-editor>",
+		controller: 'ModelEditCtrl',
+		resolve: { myVar:
+			function (connectionFactory) {
+				return connectionFactory.connected;
+			}
+		}
 	}).otherwise({
-		redirectTo: "/shop"
+		redirectTo: "/list/shop"
 	});
 });

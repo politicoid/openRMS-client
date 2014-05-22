@@ -12,9 +12,9 @@
 	</head>
 	<body>
 		<div ng-controller="MainCtrl" ng-init = "init()">
-			<!--<ng-include src="'agora.conf'"></ng-include>-->
+			<ng-include src="'admin/views/menu.html'"></ng-include>
 			<div class="col-md-2">
-				<ng-include src="'admin/views/menu.html'"></ng-include>
+				<ng-include src="'admin/views/side_menu.html'"></ng-include>
 			</div>
 			<div ng-view class="container col-md-10"></div>
 		</div>
