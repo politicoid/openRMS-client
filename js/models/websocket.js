@@ -46,7 +46,6 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 			delete callbacks[messageObj.callbackID];
 		}
 	}
-
 	// This creates a new callback ID for a request
 	function getCallbackId() {
 		currentCallbackId += 1;
@@ -55,6 +54,29 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		}
 		return currentCallbackId;
 	}
+	function login(username, password)
+	{
+		var request = {
+			resource: 'user',
+			operation: 'login',
+			data: {username: username, password: password}
+		};
+		return sendRequest(request);
+	}
+	Service.saveDoc = function(resource, doc) {
+		var request = {
+			resource: resource,
+			data: doc
+		};
+		if (doc._id != null)
+		{
+			request.operation = "update";
+		} else
+		{
+			request.operation = "create";
+		}
+		return sendRequest(request);
+	};
 	Service.getDoc = function(resource, id) {
 		var request = {
 			resource: resource,
@@ -83,7 +105,7 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 	Service.deleteDoc = function(resource, id) {
 		var request = {
 			resource: resource,
-			operation: "delete",
+			operation: "remove",
 			data: id
 		};
 		sendRequest(request);

@@ -1,23 +1,6 @@
 agoraApp.config(function($routeProvider) {
-	$routeProvider.when('/list/shop', {
+	$routeProvider.when('/list/:resource/:sid?', {
 		template: "<document-table></document-table>",
-		controller: 'ShopListCtrl',
-		resolve: { myVar:
-			function (connectionFactory) {
-				return connectionFactory.connected;
-			}
-		}
-	}).when('/list/item/:sid?', {
-		template: "<document-table></document-table>",
-		controller: 'ItemListCtrl',
-		resolve: { myVar:
-			function (connectionFactory) {
-				return connectionFactory.connected;
-			}
-		}
-	}).when('/list/:resource/:sid?', {
-		template: "<document-table></document-table>",
-		controller: 'ModelListCtrl',
 		resolve: { myVar:
 			function (connectionFactory) {
 				return connectionFactory.connected;
@@ -26,6 +9,14 @@ agoraApp.config(function($routeProvider) {
 	}).when('/edit/:resource/:id?', {
 		template: "<document-editor></document-editor>",
 		controller: 'ModelEditCtrl',
+		resolve: { myVar:
+			function (connectionFactory) {
+				return connectionFactory.connected;
+			}
+		}
+	}).when('/login', {
+		template: "<login></login>",
+		controller: 'LoginCtrl',
 		resolve: { myVar:
 			function (connectionFactory) {
 				return connectionFactory.connected;

@@ -1,5 +1,35 @@
-var agoraApp = angular.module('agoraApp', ['ngRoute', 'ngSanitize']);
+// Helper function: http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
+var byString = function(o, s) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    var a = s.split('.');
+    while (a.length) {
+        var n = a.shift();
+        if (n in o) {
+            o = o[n];
+        } else {
+            return;
+        }
+    }
+    return o;
+};
 
+var extract = function(o, string)
+{
+	if (string != null)
+	{
+		// Not sure how to get the directive to compile with data so use this instead..
+		if (string.substring(0, 2) == "{{" && (string.indexOf("}}") == string.length - 2))
+		{
+			var temp = string.substring(2, string.length - 2);
+			return byString(o, temp);
+		}
+		return string;
+	}
+	return null;
+};
+
+var agoraApp = angular.module('agoraApp', ['ngRoute', 'ngSanitize']);
 var normalize = function($input) {
 	var split = $input.split('_');
 	var string = "";
@@ -12,7 +42,15 @@ var normalize = function($input) {
    	return string;
 };
 
-agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory) {
+agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory, storageService, $location) {
+	var session = storageService.get('session');
+	if (session == null)
+		session = 0;
+	$scope.session = session;
+	$scope.goLogin = function()
+	{
+		$location.path("/login");
+	};
 	$scope.$on('$viewContentLoaded', function () {
 		if ($scope.models) return;
 		connectionFactory.getDocs("model").then(function (models) {
@@ -25,53 +63,54 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 			$scope.model_keys = model_keys;
 		});
 	});
-}).controller('ShopListCtrl', function ($scope, connectionFactory, $routeParams) {
-	$scope.columns = {'stylized': 'Name', 'url': "URL", 'short_desc': 'Short Description'};
-	$scope.$parent.resource = "shop";
-	var sid = $routeParams.sid;
-	if (sid == null)
-		sid = 0;
-	connectionFactory.getDocs("shop").then(function (docs) {
-		$scope.docs = docs;
-	});
-}).controller('ItemListCtrl', function ($scope, connectionFactory, $routeParams) {
-	$scope.columns = {'name': 'Item', 'sku': 'SKU' , 'short_desc': 'Short Description'};
-	$scope.$parent.resource = "item";
-	var sid = $routeParams.sid;
-	if (sid == null)
-		sid = 0;
-	connectionFactory.getDocs("item", {shop: sid}).then(function (docs) {
-		$scope.docs = docs;
-	});
+// Converting Model List Controller & document-table to general use
 }).controller('ModelListCtrl', function ($scope, connectionFactory, $routeParams) {
 	var resource = $routeParams.resource;
-	$scope.$parent.resource = resource;
 	var sid = $routeParams.sid;
 	if (sid == null)
 		sid = 0;
 
-	if ($scope.docs) return;
-	$scope.$watch('models', function($value) {
+	var getData = function(resource) {
+		var model = $scope.models[resource];
+		$scope.model = model;
+		connectionFactory.getDocs(resource, {shop: sid}).then(function (docs) {
+			$scope.docs = docs;
+		});
+	};
+
+	$scope.$watch('resource', function($value)
+	{
 		var val = $value || null;
 		if (val)
 		{
-			var model = $scope.models[resource];
-			var columns = {};
-			for (var key in model)
+			if (!$scope.models)
 			{
-				if (key != "_id" && key != "__v" && !(model[key].options["internal"]))
-					columns[key] = normalize(key);
+				$scope.$watch('models', function($value) {
+					var val = $value || null;
+					if (val)
+					{
+						getData($scope.resource);
+					}
+				});
+			} else
+			{
+				getData($scope.resource);
 			}
-			$scope.columns = columns;
-			connectionFactory.getDocs(resource, {shop: sid}).then(function (docs) {
-				$scope.docs = docs;
-			});
 		}
 	});
+	if (resource != null)
+		$scope.resource = resource;
 }).directive('documentTable', function($compile, $location)
 {
 	var linkFunction = function($scope, $element)
 	{
+		var resource = $element.attr('dtResource');
+		var embedded = $element.attr('dtEmbedded');
+		if (embedded != null)
+			$scope.embedded = embedded;
+		if (resource != null)
+			$scope.resource = extract($scope, resource);
+		$scope.linked = true;
 		$scope.$watch('docs', function() {
 			$scope.edit_entry = function(doc)
 			{
@@ -92,8 +131,8 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 	};
 	return {
 		restrict: 'E',
-		scope: true,
 		templateUrl: 'admin/views/document_table.html',
+		controller: 'ModelListCtrl',
 		compile: function ($element, $attrs, $timeout)
 		{
 			return linkFunction;
@@ -124,14 +163,25 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 }).directive('documentField', function ($compile) {
 	return function($scope, $element, $attrs) {
 		if ($scope.$last && $scope.lastEntry) {
-			$element.parents().find('table').first().dataTable({
-				"bFilter": false
+			$scope.$watch('linked', function($value) {
+				var val = $value || null;
+				if (val)
+				{
+					$element.parents().find('table').first().dataTable({
+						"bFilter": false
+					});
+				}
 			});
 		}
 	};
-}).controller('ModelEditCtrl', function ($scope, connectionFactory, $routeParams) {
+}).controller('ModelEditCtrl', function ($scope, connectionFactory, $routeParams, $location) {
 	var resource = $routeParams.resource;
 	$scope.$parent.resource = resource;
+	$scope.save = function() {
+		connectionFactory.saveDoc(resource, $scope.doc).then(function (doc) {
+			$location.path('/list/' + resource + '');
+		});
+	};
 	var id = $routeParams.id;
 	if ($scope.fields) return;
 	$scope.$watch('models', function($value) {
@@ -139,12 +189,16 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 		if (val)
 		{
 			var model = $scope.models[resource];
+			console.log(model);
 			$scope.model = model;
 			if (id)
 			{
 				connectionFactory.getDoc(resource, id).then(function (doc) {
 					$scope.doc = doc;
 				});
+			} else
+			{
+				$scope.doc = {};
 			}
 		}
 	});
@@ -156,6 +210,49 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 		restrict: 'E',
 		scope: true,
 		templateUrl: 'admin/views/document_editor.html',
+		compile: function ($scope, $element, $attrs, $timeout)
+		{
+			return linkFunction;
+		}
+	};	
+}).directive('documentInput', function ($compile, $timeout) {
+	var linkFunction = function($scope, $element)
+	{
+		var field = $element.attr('field');
+		if (field != null)
+			$scope.field = extract($scope, field);
+		var meta = $element.attr('meta');
+		if (meta != null)
+		{
+			meta = extract($scope, meta);
+			if (meta.type != null && meta.type[0])
+			{
+				meta = meta.type[0];
+				$scope.isArray = true;
+			}
+			$scope.meta = meta;
+		} else
+		{
+			// Error
+		}
+		if ($scope.$last) {
+			$timeout(function () {
+				tinymce.init({
+				selector: ".html_editor",
+				plugins: [
+					"save advlist autolink lists link image charmap print preview anchor",
+					"searchreplace visualblocks code fullscreen",
+					"insertdatetime media table contextmenu paste"
+				],
+				toolbar: "save | insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+				autosave_ask_before_unload: false});
+			});
+		}
+	};
+	return {
+		restrict: 'E',
+		scope: true,
+		templateUrl: 'admin/views/document_input.html',
 		compile: function ($scope, $element, $attrs, $timeout)
 		{
 			return linkFunction;
@@ -176,4 +273,5 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 			return $input;
 		}
 	};
+// http://shahjadatalukdar.wordpress.com/2013/09/27/using-html5-localstorage-with-angularjs/
 });

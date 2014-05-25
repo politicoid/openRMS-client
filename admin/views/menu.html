@@ -20,8 +20,8 @@
 				<li class="dropdown">
 	        	  	<a href="" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li ng-if="session == 0"><a href="#">Login</a></li>
-						<li ng-if="session != 0"><a href="#">Log Out</a></li>
+						<li ng-if="session == 0" ng-click="goLogin()"><a href="">Login</a></li>
+						<li ng-if="session != 0"><a href="">Log Out</a></li>
 					</ul>
 				</li>
 			</ul>
