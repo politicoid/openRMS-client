@@ -77,28 +77,35 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		}
 		return sendRequest(request);
 	};
-	Service.getDoc = function(resource, id) {
+	Service.getDoc = function(resource, id, populate) {
 		var request = {
 			resource: resource,
 			operation: "read",
-			data: id
+			data: { id: id, populate: populate }
 		};
 		return sendRequest(request); 
 	};
 	Service.getModel = function(resource) {
 		var request = {
 			resource: "model",
-			operation: "search",
+			operation: "read",
 			data: resource
 		};
 		return sendRequest(request); 
 	};
+	Service.getModels = function(resource) {
+		var request = {
+			resource: "model",
+			operation: "search",
+		};
+		return sendRequest(request); 
+	};
 	// Used by admin features
-	Service.getDocs = function(resource, constraints) {
+	Service.getDocs = function(resource, constraints, populate) {
 		var request = {
 			resource: resource,
 			operation: "search",
-			data: constraints
+			data: { constraints: constraints, populate: populate }
 		};
 		return sendRequest(request); 
 	};
@@ -106,7 +113,7 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		var request = {
 			resource: resource,
 			operation: "remove",
-			data: id
+			data: { id: id }
 		};
 		sendRequest(request);
 	};

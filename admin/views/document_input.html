@@ -1,6 +1,6 @@
 <div class="form-group" ng-if="field != '_id' && field != '__v' && field != 'shop' && !meta.internal">
-	<label class="col-md-3 control-label">{{meta.name | normalize}}</label>
-	<div class="col-md-8">
+	<label class="col-md-2 control-label">{{meta.name | normalize}}</label>
+	<div class="col-md-10">
 		<!-- Change these to directives to make it cleaner-->
 		<input type = "text" class="form-control input-md" ng-model = "doc[key]" ng-if="!(isArray || meta.ref) && meta.media_type != 'text/html'"></input>
 		<textarea class="html_editor" ng-if="meta.media_type == 'text/html'" ng-model = "doc[key]">

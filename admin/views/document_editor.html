@@ -1,13 +1,18 @@
-<form role="form" class="form-horizontal">
-	<fieldset>
-		<legend>{{resource | normalize}}</legend>
-		<document-input ng-repeat="(key, value) in model" field = "{{key}}" meta="{{value.options}}">
-		</document-input>
-		<div class="form-group">
-			<div class="col-md-3"></div>
-			<div class="col-md-3">
-				<button id="singlebutton" name="singlebutton" class="btn btn-primary" ng-click="save()">Submit</button>
+<legend>{{resource | normalize}}</legend>
+<div class="col-md-4">
+	<document-filter ng-repeat="(key, path) in model.paths" field="{{key}}" path="{{path}}" filter="filter"></document-filter>
+</div>
+<div class="col-md-8">
+	<form role="form" class="form-horizontal">
+		<fieldset>
+			<document-input ng-repeat="(key, path) in model.paths" field = "{{key}}" path="{{path}}">
+			</document-input>
+			<div class="form-group">
+				<div class="col-md-3"></div>
+				<div class="col-md-3">
+					<button id="singlebutton" name="singlebutton" class="btn btn-primary" ng-click="save()">Submit</button>
+				</div>
 			</div>
-		</div>
-	</fieldset>
-</form>
+		</fieldset>
+	</form>
+</div>

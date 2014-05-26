@@ -29,6 +29,32 @@ var extract = function(o, string)
 	return null;
 };
 
+var getAttributes = function($scope, $element)
+{
+	var field = $element.attr('field');
+	if (field != null)
+		$scope.field = extract($scope, field);
+	var path = $element.attr('path');
+	if (path != null)
+	{
+		path = extract($scope, path);
+		if (path != null)
+		{
+			$scope.path = path;
+			var meta = path.options;
+			if (meta.type != null && meta.type[0])
+			{
+				meta = meta.type[0];
+				$scope.isArray = true;
+			}
+			$scope.meta = meta;
+		}
+	} else
+	{
+		// Error
+	}
+};
+
 var agoraApp = angular.module('agoraApp', ['ngRoute', 'ngSanitize']);
 var normalize = function($input) {
 	var split = $input.split('_');
@@ -53,14 +79,8 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 	};
 	$scope.$on('$viewContentLoaded', function () {
 		if ($scope.models) return;
-		connectionFactory.getDocs("model").then(function (models) {
+		connectionFactory.getModels().then(function (models) {
 			$scope.models = models;
-			var model_keys = [];
-			for (var key in models)
-			{
-				model_keys.push(key);
-			}
-			$scope.model_keys = model_keys;
 		});
 	});
 // Converting Model List Controller & document-table to general use
@@ -160,6 +180,8 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 			$scope.lastEntry = true;
 		}
 	};
+// I can probably do away with this directive since it was mainly in place to ensure that dataTables was called after documentEntry was done rendering.
+// However, I can do this easily now that I know how to use $timeout
 }).directive('documentField', function ($compile) {
 	return function($scope, $element, $attrs) {
 		if ($scope.$last && $scope.lastEntry) {
@@ -183,13 +205,11 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 		});
 	};
 	var id = $routeParams.id;
-	if ($scope.fields) return;
 	$scope.$watch('models', function($value) {
 		var val = $value || null;
 		if (val)
 		{
 			var model = $scope.models[resource];
-			console.log(model);
 			$scope.model = model;
 			if (id)
 			{
@@ -202,6 +222,20 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 			}
 		}
 	});
+}).directive("documentFilter", function ($compile) {
+	var linkFunction = function($scope, $element)
+	{
+		getAttributes($scope, $element);
+	};
+	return {
+		restrict: 'E',
+		scope: true,
+		templateUrl: 'admin/views/document_filter.html',
+		compile: function ($scope, $element, $attrs, $timeout)
+		{
+			return linkFunction;
+		}
+	};	
 }).directive('documentEditor', function ($compile) {
 	var linkFunction = function($scope, $element)
 	{
@@ -218,23 +252,7 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 }).directive('documentInput', function ($compile, $timeout) {
 	var linkFunction = function($scope, $element)
 	{
-		var field = $element.attr('field');
-		if (field != null)
-			$scope.field = extract($scope, field);
-		var meta = $element.attr('meta');
-		if (meta != null)
-		{
-			meta = extract($scope, meta);
-			if (meta.type != null && meta.type[0])
-			{
-				meta = meta.type[0];
-				$scope.isArray = true;
-			}
-			$scope.meta = meta;
-		} else
-		{
-			// Error
-		}
+		getAttributes($scope, $element);
 		if ($scope.$last) {
 			$timeout(function () {
 				tinymce.init({
