@@ -1,11 +1,12 @@
-<div class="form-group" ng-if="field != '_id' && field != '__v' && field != 'shop' && !meta.internal">
+<div class="form-group" ng-if="field != '_id' && field != '__v' && field != 'shop' && !meta.internal && !meta.parent">
 	<label class="col-md-2 control-label">{{meta.name | normalize}}</label>
 	<div class="col-md-10">
 		<!-- Change these to directives to make it cleaner-->
-		<input type = "text" class="form-control input-md" ng-model = "doc[key]" ng-if="!(isArray || meta.ref) && meta.media_type != 'text/html'"></input>
-		<textarea class="html_editor" ng-if="meta.media_type == 'text/html'" ng-model = "doc[key]">
+		<input type = "text" class="form-control input-md" ng-model = "doc[field]" ng-if="!(isArray || meta.ref) && meta.media_type != 'text/html'"></input>
+		<textarea id="doc-input-{{field}}" class="html_editor" ng-if="meta.media_type == 'text/html'">
 		</textarea>
-		<select ng-if="meta.ref != null && !isArray" class="form-control input-md">
+		<select class="form-control input-md" ng-model="doc[field]" ng-if="meta.ref != null && !isArray">
+			<option ng-repeat="option in options" value="{{option._id}}">{{option[readable_key]}}</option>
 		</select>
 		<document-table dtEmbedded="true" dtResource="{{meta.ref}}" ng-if="meta.ref != null && isArray"></document-table>
 	</div>

@@ -1,7 +1,9 @@
-<div class="form-group col-md-12" ng-if="meta.parent != null && !meta.internal">
+<div class="form-group col-md-12" ng-if="meta.parent != null && !meta.internal && resource != null">
 	<label class="col-md-4 control-label">{{meta.name | normalize}}</label>
-	<div class="col-md-8">
-		<select class="form-control input-md">
-		</select>
-	</div>
+	<select class="form-control input-md col-md-8" ng-model="filter[field]" ng-if="!isArray">
+		<option ng-repeat="option in options" value="{{option._id}}">{{option[readable_key]}}</option>
+	</select>
+	<select class="form-control input-md col-md-8" ng-model="filter[field]" multiple="true" ng-if="isArray">
+		<option ng-repeat="option in options" value="{{option._id}}">{{option[readable_key]}}</option>
+	</select>
 </div>

@@ -1,7 +1,7 @@
 <div class="bs-sidebar">
 	<ul class="nav nav-pills nav-stacked span2">
 		<li class="sidebar-brand">Administration</li>
-		<li ng-repeat="key in model_keys"><a href="#/list/{{key}}" capitalize-first>{{key | normalize}}</a></li>
+		<li ng-repeat="(key, model) in models"><a href="#/list/{{key}}" capitalize-first>{{key | normalize}}</a></li>
 		<!--<li ng-repeat-end ng-if="key == resource" class="active"><a href="#/resource/{{key}}s" capitalize-first>{{key | normalize}}</a></li>-->
 	</ul>
 </div>

@@ -29,6 +29,7 @@ var extract = function(o, string)
 	return null;
 };
 
+// Change this so it doesn't use {{}}
 var getAttributes = function($scope, $element)
 {
 	var field = $element.attr('field');
@@ -90,10 +91,12 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 	if (sid == null)
 		sid = 0;
 
+	$scope.filter = {};
+
 	var getData = function(resource) {
 		var model = $scope.models[resource];
 		$scope.model = model;
-		connectionFactory.getDocs(resource, {shop: sid}).then(function (docs) {
+		connectionFactory.getDocs(resource, $scope.filter).then(function (docs) {
 			$scope.docs = docs;
 		});
 	};
@@ -200,6 +203,7 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 	var resource = $routeParams.resource;
 	$scope.$parent.resource = resource;
 	$scope.save = function() {
+		console.log($scope.doc);
 		connectionFactory.saveDoc(resource, $scope.doc).then(function (doc) {
 			$location.path('/list/' + resource + '');
 		});
@@ -220,12 +224,35 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 			{
 				$scope.doc = {};
 			}
+			$scope.filter = $scope.doc;
 		}
 	});
-}).directive("documentFilter", function ($compile) {
+}).directive("documentFilter", function ($compile, connectionFactory) {
 	var linkFunction = function($scope, $element)
 	{
 		getAttributes($scope, $element);
+		var filter = $element.attr('filter');
+		var constraints = $element.attr('constraints');
+		if (filter != null && constraints != null)
+		{
+			$scope.constraints = extract(constraints);
+			$scope.filter = extract($scope, filter);
+			if ($scope.path != null)
+			{
+				var path = $scope.path;
+				var resource = $scope.meta.parent;
+				if (resource != null)
+				{
+					$scope.resource = resource;
+					var model = $scope.models[resource];
+					$scope.model = model;
+					$scope.readable_key = model.keys['human_readable'];
+					connectionFactory.getDocs(resource, constraints, { path: resource, select: model.keys['readable_key'] + ' _id' }).then(function (docs) {
+						$scope.options = docs;
+					});
+				}
+			}
+		}
 	};
 	return {
 		restrict: 'E',
@@ -248,15 +275,51 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 		{
 			return linkFunction;
 		}
-	};	
-}).directive('documentInput', function ($compile, $timeout) {
+	};
+}).directive('documentInput', function ($compile, $timeout, connectionFactory) {
 	var linkFunction = function($scope, $element)
 	{
 		getAttributes($scope, $element);
-		if ($scope.$last) {
-			$timeout(function () {
+		var meta = $scope.meta;
+		var constraints = $element.attr('constraints');
+		if (constraints == null)
+			constraints = {};
+		else
+			constraints = extract($scope, constraints);
+			
+		$scope.constraints = constraints;
+		var id = "doc-input-" + $scope.field;
+		if (meta.ref && !meta.parent && !$scope.isArray)
+		{
+			if ($scope.path != null)
+			{
+				var path = $scope.path;
+				var resource = meta.ref;
+				if (resource != null)
+				{
+					$scope.resource = resource;
+					var model = $scope.models[resource];
+					$scope.model = model;
+					$scope.readable_key = model.keys['human_readable'];
+					connectionFactory.getDocs(resource, constraints, { path: resource, select: model.keys['readable_key'] + ' _id' }).then(function (docs) {
+						$scope.options = docs;
+					});
+				}
+			}
+		}
+		$timeout(function () {
+			var textbox = $.find("#" + id)[0];
+			if (textbox != null)
+			{
 				tinymce.init({
-				selector: ".html_editor",
+				setup: function (ed) {
+					ed.on('init', function (e) {
+						if ($scope.doc[$scope.field] == null)
+							$scope.doc[$scope.field] = "";
+						ed.setContent($scope.doc[$scope.field]);
+					});
+				},
+				selector: "#" + id,
 				plugins: [
 					"save advlist autolink lists link image charmap print preview anchor",
 					"searchreplace visualblocks code fullscreen",
@@ -264,8 +327,8 @@ agoraApp.controller('MainCtrl', function($scope, $routeParams, connectionFactory
 				],
 				toolbar: "save | insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
 				autosave_ask_before_unload: false});
-			});
-		}
+			}
+		});
 	};
 	return {
 		restrict: 'E',

@@ -1,11 +1,11 @@
 <legend>{{resource | normalize}}</legend>
 <div class="col-md-4">
-	<document-filter ng-repeat="(key, path) in model.paths" field="{{key}}" path="{{path}}" filter="filter"></document-filter>
+	<document-filter ng-repeat="(key, path) in model.paths" field="{{key}}" path="{{path}}" filter="{{filter}}" constraints="{{filter}}"></document-filter>
 </div>
 <div class="col-md-8">
 	<form role="form" class="form-horizontal">
 		<fieldset>
-			<document-input ng-repeat="(key, path) in model.paths" field = "{{key}}" path="{{path}}">
+			<document-input ng-repeat="(key, path) in model.paths" field = "{{key}}" path="{{path}}" constraints="{{filter}}">
 			</document-input>
 			<div class="form-group">
 				<div class="col-md-3"></div>

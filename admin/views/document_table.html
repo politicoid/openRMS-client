@@ -1,22 +1,48 @@
-<h1 ng-if="!embedded">{{resource | normalize}} Management</h1>
-<div class="btn-group" ng-if="!embedded">
-	<a class="btn btn-sm btn-default glyphicon glyphicon-plus cmd-new" title = "Add {{resource | normalize}}" href = "" ng-click="edit_entry()"></a>
+<div ng-if="!embedded">
+	<h1>{{resource | normalize}} Management</h1>
+	<div class="col-md-4">
+		<document-filter ng-repeat="(key, path) in model.paths" field="{{key}}" path="{{path}}" constraints="{{filter}}" filter="{{filter}}"></document-filter>
+	</div>
+	<div class="col-md-8">
+		<div class="btn-group">
+			<a class="btn btn-sm btn-default glyphicon glyphicon-plus cmd-new" title = "Add {{resource | normalize}}" href = "" ng-click="edit_entry()"></a>
+		</div>
+		<hr/>
+		<table id = "resource-{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+			<thead>
+				<tr>
+					<th ng-repeat = "(key, path) in model.paths">{{key | normalize}}</th>
+					<th class = "col-md-1" ng-if="embedded != 'true'">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat = "doc in docs" doc-resource = "{{resource}}" doc-id="{{doc['_id']}}" document-entry>
+					<td ng-repeat = "(key, path) in model.paths" document-field title = "{{doc[key]}}">{{doc[key] | trim}}</td>
+					<td ng-if="!embedded">
+						<a class="btn btn-sm btn-default glyphicon glyphicon-edit" title="Edit" href="" ng-click="edit_entry(doc)"></a>
+						<a class="btn btn-sm btn-default glyphicon glyphicon-trash" title="Delete" href="" ng-click = "delete_entry(doc)"></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
-<hr/>
-<table id = "resource-{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
-	<thead>
-		<tr>
-			<th ng-repeat = "(key, path) in model.paths">{{key | normalize}}</th>
-			<th class = "col-md-1" ng-if="embedded != 'true'">Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat = "doc in docs" doc-resource = "{{resource}}" doc-id="{{doc['_id']}}" document-entry>
-			<td ng-repeat = "(key, path) in model.paths" document-field title = "{{doc[key]}}">{{doc[key] | trim}}</td>
-			<td ng-if="!embedded">
-				<a class="btn btn-sm btn-default glyphicon glyphicon-edit" title="Edit" href="" ng-click="edit_entry(doc)"></a>
-				<a class="btn btn-sm btn-default glyphicon glyphicon-trash" title="Delete" href="" ng-click = "delete_entry(doc)"></a>
-			</td>
-		</tr>
-	</tbody>
-</table>
+<div ng-if="embedded">
+	<table id = "resource-{{resource}}" cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+		<thead>
+			<tr>
+				<th ng-repeat = "(key, path) in model.paths">{{key | normalize}}</th>
+				<th class = "col-md-1" ng-if="embedded != 'true'">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat = "doc in docs" doc-resource = "{{resource}}" doc-id="{{doc['_id']}}" document-entry>
+				<td ng-repeat = "(key, path) in model.paths" document-field title = "{{doc[key]}}">{{doc[key] | trim}}</td>
+				<td ng-if="!embedded">
+					<a class="btn btn-sm btn-default glyphicon glyphicon-edit" title="Edit" href="" ng-click="edit_entry(doc)"></a>
+					<a class="btn btn-sm btn-default glyphicon glyphicon-trash" title="Delete" href="" ng-click = "delete_entry(doc)"></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
