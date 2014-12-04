@@ -23,6 +23,6 @@ agoraApp.config(function($routeProvider) {
 			}
 		}
 	}).otherwise({
-		redirectTo: "/list/shop"
+		redirectTo: "/list/user"
 	});
 });

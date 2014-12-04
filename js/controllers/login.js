@@ -6,7 +6,6 @@ agoraApp.controller('LoginCtrl', function ($scope) {
 		{
 			connectionFactory.login(username, password).then(function (session) {
 				$scope.$parent.session = session;
-				storageService.put('session', session);
 				$location.path('/');
 			});
 		};
