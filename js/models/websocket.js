@@ -66,7 +66,7 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 	Service.saveDoc = function(resource, doc) {
 		var request = {
 			resource: resource,
-			data: doc
+			data: { doc: doc }
 		};
 		if (doc._id != null)
 		{
