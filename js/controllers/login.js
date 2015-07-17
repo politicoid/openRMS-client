@@ -1,4 +1,4 @@
-agoraApp.controller('LoginCtrl', function ($scope) {
+openRMSApp.controller('LoginCtrl', function ($scope) {
 }).directive('login', function ($compile, connectionFactory, $location, storageService) {
 	var linkFunction = function($scope, $element)
 	{

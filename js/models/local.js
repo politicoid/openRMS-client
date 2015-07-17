@@ -1,4 +1,4 @@
-agoraApp.factory('storageService', function ($rootScope) {
+openRMSApp.factory('storageService', function ($rootScope) {
     return {
         get: function (key) {
            return localStorage.getItem(key);

@@ -1,2 +1,2 @@
-agoraApp.controller('MenuCtrl', function($scope, $http, $routeParams) {
+openRMSApp.controller('MenuCtrl', function($scope, $http, $routeParams) {
 });

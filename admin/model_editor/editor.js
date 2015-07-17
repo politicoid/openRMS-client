@@ -3,7 +3,7 @@ var addElement = function()
 	
 };
 
-agoraApp.directive('editorElement', function ($compile) {
+openRMSApp.directive('editorElement', function ($compile) {
 	var linkFunction = function($scope, $element)
 	{
 	};

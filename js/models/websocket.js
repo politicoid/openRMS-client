@@ -85,6 +85,17 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		};
 		return sendRequest(request); 
 	};
+	// Get resource from hyerlink
+	// I feel like I still want to modify the way directory services work
+	Service.getURL = function(url, populate)
+	{
+		var request = {
+			resource: "index",
+			operation: "read",
+			data: { url: url, populate: populate }
+		};
+		return sendRequest(request); 
+	};
 	Service.getModel = function(resource) {
 		var request = {
 			resource: "model",

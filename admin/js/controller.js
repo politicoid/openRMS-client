@@ -29,7 +29,7 @@ var extract = function(o, string)
 	return null;
 };
 
-// Change this so it doesn't use {{}}
+// Change this so it doesn't use {{}} - No sure what I meant by this now...
 var getAttributes = function($scope, $element)
 {
 	var field = $element.attr('field');
@@ -56,7 +56,7 @@ var getAttributes = function($scope, $element)
 	}
 };
 
-var agoraApp = angular.module('agoraApp', ['ngRoute', 'ngSanitize']);
+var openrmsApp = angular.module('openRMSApp', ['ngRoute', 'ngSanitize']);
 var normalize = function($input) {
 	var split = $input.split('_');
 	var string = "";
