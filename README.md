@@ -1,9 +1,2 @@
-<<<<<<< HEAD
-agora-client
-============
-
-Agora Social Market Client
-=======
 # openRMS-client
-Open Resource Management System Client
->>>>>>> branch 'master' of https://github.com/politicoid/openRMS-client.git
+OpenRMS is an open source general purpose resource management system. Think of it as the ultimate separation of style and data. With openRMS you can store large data sets and access them over the web, either using REST or as a virtual filesystem similar the Gopher.
