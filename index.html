@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="openRMS">
+<html lang="en" ng-app="openRMSApp">
 	<head>
 		<title>openRMS</title>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
@@ -11,8 +11,8 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/tinymce/4.0.20/tinymce.min.js"></script>
 	</head>
 	<body>
-		<div ng-controller="ResourceCtrl" ng-init = "init()">
-			<div ng-view class="container col-md-12"></div>
+		<div ng-controller="MainCtrl">
+			<div ng-view class="container col-md-12"><resource url="/"></resource></div>
 		</div>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0-beta.7/angular.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0-beta.7/angular-route.js"></script>

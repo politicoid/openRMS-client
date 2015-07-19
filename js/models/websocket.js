@@ -1,6 +1,6 @@
 // From http://clintberry.com/2013/angular-js-websocket-service/
 
-agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootScope) {
+openRMSApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootScope) {
 	// We return this object to anything injecting our service
 	var Service = {};
 	// Keep all pending requests here until they get responses
@@ -41,8 +41,10 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 			var error = messageObj.error;
 			if (error == null)
 				$rootScope.$apply(callbacks[messageObj.callback_id].cb.resolve(messageObj.data));
-			else
+			else {
+				console.log(error);
 				$rootScope.$apply(callbacks[messageObj.callback_id].cb.reject(error));
+			}
 			delete callbacks[messageObj.callbackID];
 		}
 	}
@@ -63,10 +65,10 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		};
 		return sendRequest(request);
 	}
-	Service.saveDoc = function(resource, doc) {
+	Service.saveDoc = function(resource, doc, url) {
 		var request = {
 			resource: resource,
-			data: { doc: doc }
+			data: { doc: doc, url: url }
 		};
 		if (doc._id != null)
 		{
@@ -77,7 +79,7 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		}
 		return sendRequest(request);
 	};
-	Service.getDoc = function(resource, id, populate) {
+	Service.getByID = function(resource, id, populate) {
 		var request = {
 			resource: resource,
 			operation: "read",
@@ -86,11 +88,10 @@ agoraApp.factory('connectionFactory', ['$q', '$rootScope', function($q, $rootSco
 		return sendRequest(request); 
 	};
 	// Get resource from hyerlink
-	// I feel like I still want to modify the way directory services work
-	Service.getURL = function(url, populate)
+	Service.getByURL = function(url, populate)
 	{
 		var request = {
-			resource: "index",
+			resource: "text",
 			operation: "read",
 			data: { url: url, populate: populate }
 		};
