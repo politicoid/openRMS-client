@@ -1,6 +1,6 @@
 openRMSApp.config(function($routeProvider) {
 	$routeProvider.when('/:url?', {
-		templateUrl: '/views/resource.html',
+		templateUrl: '/views/file.html',
 		controller: 'MainCtrl',
 		resolve: { myVar:
 			function (connectionFactory) {

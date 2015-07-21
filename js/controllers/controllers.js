@@ -5,6 +5,7 @@ var openRMSApp = angular.module('openRMSApp', ['ngRoute', 'ngSanitize']);
 openRMSApp.controller('MainCtrl', function ($scope, connectionFactory, $routeParams) {
 	var url = $routeParams.url;
 	if (url == null) url = "/";
+	$scope.url = url;
 
 	if (!$scope.loaded)
 	{
@@ -15,10 +16,9 @@ openRMSApp.controller('MainCtrl', function ($scope, connectionFactory, $routePar
 	}
 // Grabs a resource from a specified URL and renders it
 }).directive("resource", function(connectionFactory) {
-	var linkFunction = function(scope, element, attr) {
-		scope.$watch(scope.loaded, function() {
+	var link = function(scope, element, attributes) {
 		// Grab document
-		var url = attr.url;
+		var url = attributes.url;
 		if (url !== null)
 		{
 			connectionFactory.getByURL(url, false).then(function(data) {
@@ -28,22 +28,21 @@ openRMSApp.controller('MainCtrl', function ($scope, connectionFactory, $routePar
 				// If found, use it, oherwise use table rendering
 				if (sublist != null && sublist[0] == "text")
 				{
-					var el = $(element);
 					// For some reason jqlite is still default, even though jquery script was loaded first
-					var content = el.find(".content");
-					content.append(angular.element("<b>" + data.doc.content + "</b>"));
+					element.append(angular.element("<h1>" + url + "</h1><hr/><div>" + data.doc.content + "</div>"));
 				} else
 				{
 		
 				}
 			});
 		}
-		});
+//		element.append(angular.element("Testing"));
+		return function(element, attrs) {};
 	};
 	return {
 		restrict: 'E',
 		transclude: true,
-		templateUrl: 'views/resource.html',
-		compile: function(scope, element, attrs, timeout) { return linkFunction; }
+		template: '<div></div>',
+		link: link
 	};
 });
